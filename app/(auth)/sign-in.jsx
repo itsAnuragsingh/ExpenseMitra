@@ -41,11 +41,16 @@ export default function Page() {
         // If the status isn't complete, check why. User might need to
         // complete further steps.
         console.error(JSON.stringify(signInAttempt, null, 2))
+        setLoading(false)
       }
     } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2))
+      if(err.errors?.[0]?.code === 'form_password_incorrect') {
+        setError('Incorrect email or password')
+        setLoading(false)
+      }else {
+        setError('An error occurred while signing in. Please try again.')
+        setLoading(false)
+      }
     }
   }
 

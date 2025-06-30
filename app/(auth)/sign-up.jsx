@@ -37,9 +37,13 @@ export default function SignUpScreen() {
       // and capture OTP code
       setPendingVerification(true)
     } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2))
+      if(err.errors?.[0]?.code === 'form_identifier_exists') {
+        setError('That email address is taken. Please try another.')
+        
+      }else {
+        setError('An error occurred while signing in. Please try again.')
+        
+      }
     }
   }
 
@@ -64,9 +68,13 @@ export default function SignUpScreen() {
         console.error(JSON.stringify(signUpAttempt, null, 2))
       }
     } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2))
+      if(err.errors?.[0]?.code === 'form_identifier_exists') {
+        setError('That email address is taken. Please try another.')
+        
+      }else {
+        setError('An error occurred while signing in. Please try again.')
+        
+      }
     }
   }
 
@@ -107,6 +115,15 @@ export default function SignUpScreen() {
     <View style={styles.container}>
         <Image source={require("../../assets/images/revenue-i2.png")} style={styles.illustration}/>
         <Text style={styles.title}>Create Account</Text>
+        {error ? (
+            <View style={styles.errorBox}>
+                <Ionicons name='alert-circle' size={20} color={COLORS.expense}/>
+                <Text style={styles.errorText}>{error}</Text>
+                <TouchableOpacity onPress={() => setError('')}>
+                    <Ionicons name='close' size={20} color={COLORS.textLight}/>
+                </TouchableOpacity>
+            </View>
+        ): null }
         <TextInput
         style={[styles.input, error && styles.errorInput]}
         placeholderTextColor="#9A84A4"
